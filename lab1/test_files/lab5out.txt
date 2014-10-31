@@ -1,0 +1,5 @@
+Enter initial velocity (or type 'exit') > Enter initial angle (or type 'exit') > Distance is: 206.633
+Enter initial velocity (or type 'exit') > Enter initial angle (or type 'exit') > Distance is: 79.5329
+Enter initial velocity (or type 'exit') > Enter initial angle (or type 'exit') > Distance is: 79.5329
+Enter initial velocity (or type 'exit') > Enter initial angle (or type 'exit') > Distance is: 0
+Enter initial velocity (or type 'exit') > Goodbye
