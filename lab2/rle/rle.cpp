@@ -4,7 +4,7 @@
 #include <cstring>
 using namespace std;
 
-const unsigned long MAX_SIZE = 2 * 1073741824 - 1; // 2Gb
+const unsigned long MAX_SIZE = 2UL * 1073741824UL - 1UL; // 2Gb
 const long BUF_SIZE = 1024;
 
 enum ErrRle 
@@ -16,13 +16,13 @@ enum ErrRle
 
 void PrintUsage() 
 {
-	printf("USAGE: rle.exe pack <input file> <output file> \n");
-	printf("       rle.exe unpack <input file> <output file> \n");
+	cout << "USAGE: rle.exe pack <input file> <output file>" << endl;
+	cout << "       rle.exe unpack <input file> <output file>" << endl;
 }
 
 ErrRle PackFile(ifstream& fileIn, ofstream& fileOut)
 {
-	char bufferOut[2];
+	unsigned char bufferOut[2];
 	unsigned long totalSize = 0;
 	if (!fileIn.eof())
 	{
@@ -40,7 +40,7 @@ ErrRle PackFile(ifstream& fileIn, ofstream& fileOut)
 			}
 			bufferOut[0] = charCount;
 			bufferOut[1] = oldChar;
-			unsigned int incSize = 2 * sizeof(char);
+			unsigned int incSize = sizeof(bufferOut);
 			totalSize += incSize;
 			if (totalSize > MAX_SIZE)
 			{
@@ -48,7 +48,7 @@ ErrRle PackFile(ifstream& fileIn, ofstream& fileOut)
 				return ERR_MAX_SIZE;
 			} else
 			{
-				fileOut.write(bufferOut, incSize);
+				fileOut.write((const char*)(bufferOut), sizeof(bufferOut));
 			}
 		}
 		delete[] bufferOut;
@@ -111,20 +111,20 @@ int main(int argc, char* argv[])
 	}
 
 	char* command = argv[1];
-	char* inputFilename = argv[2];
-	char* outputFilename = argv[3];
-
 	if ((command != "pack") && (command == "unpack"))
 	{
 		PrintUsage();
 		return 0;
 	}
 
+	char* inputFilename = argv[2];
+	char* outputFilename = argv[3];
+
 	// open a file to read
 	ifstream fIn(inputFilename, ifstream::binary);
 	if (!fIn.good())
 	{
-		printf("File %s opening error\n", inputFilename);
+		cout << "File " << inputFilename << " opening error." << endl;
 		return 1;
 	}
 
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 	ofstream fOut(outputFilename, ofstream::binary);
 	if (!fOut.good())
 	{
-		printf("File %s opening error\n", outputFilename);
+		cout << "File " << outputFilename << " opening error." << endl;
 		return 1;
 	}
 
@@ -151,13 +151,15 @@ int main(int argc, char* argv[])
 	switch (err)
 	{
 	case ERR_MAX_SIZE:
-		printf("Output file %s max size reached. Aborting job.\n", outputFilename);
+		cout << "Output file " << outputFilename << " max size reached. Aborting job." << endl;
 		return 1;
 	case ERR_ZERO_LENGTH_FILE:
-		printf("Warning! Intput file %s is empty.\n", inputFilename);
+		cout << "Warning! Intput file " << inputFilename << " is empty." << endl;
+		break;
+	case ERR_NO_ERROR:
+		cout << "File " << inputFilename << " " << command << "ed into " << outputFilename << " succesfuly." << endl;
 		break;
 	default:
-		printf("File %s %sed into %s succesfuly.\n", inputFilename, command, outputFilename);
 		break;
 	}
 

@@ -75,9 +75,15 @@ void PrintMatrix(ConstMatrix3x3& matrix)
 {
 	for (int i = 0; i<3; ++i)
 	{
+		bool firstNumber = true;
 		for (int j = 0; j<3; ++j)
 		{
-			cout << matrix[i][j] << "\t";
+			if (!firstNumber)
+			{
+				cout << "\t";
+			}
+			cout << matrix[i][j];
+			firstNumber = false;
 		}
 		cout << endl;
 	}
