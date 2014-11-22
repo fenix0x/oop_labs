@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include <fstream>
-using std::ifstream;
+#include <iostream>
+#include <string>
+using namespace std;
 
 const int MAX_CHARS_PER_LINE = 512;
 
@@ -8,7 +10,7 @@ int main(int argc, char* argv[])
 {
 	if (argc < 3) 
 	{
-		printf("USAGE: findtext.exe <file name> <text to search>\n");
+		cout << "USAGE: findtext.exe <file name> <text to search>" << endl;
 		return 0;
 	}
 
@@ -16,11 +18,10 @@ int main(int argc, char* argv[])
 	char* textToSearch = argv[2];
 
 	ifstream f;
-	// open a file
 	f.open(filename); 
 	if (!f.good()) 
 	{
-		printf("File opening error\n");
+		cout << "File opening error" << endl;
 		return 1;
 	}
 
@@ -30,20 +31,20 @@ int main(int argc, char* argv[])
 	while (!f.eof())
 	{
 		++i;
-		// read an entire line into memory
-		char buf[MAX_CHARS_PER_LINE];
-		f.getline(buf, MAX_CHARS_PER_LINE);
+		string buf;
+		getline(f, buf);
 		// find textToSearch in read line
-		if (strstr(buf, textToSearch) != NULL)
+		std::size_t found = buf.find(textToSearch);
+		if (found != std::string::npos)
 		{
-			printf("%d\n", i);
+			cout << i << endl;
 			found = true;
 		}
 	}
 	f.close();
 	if (!found) 
 	{
-		printf("Text not found.\n");
+		cout << "Text not found." << endl;
 		return 1;
 	}
 	return 0;
