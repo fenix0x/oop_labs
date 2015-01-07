@@ -7,14 +7,14 @@ using namespace std;
 const unsigned long MAX_SIZE = 2UL * 1073741824UL - 1UL; // 2Gb
 const long BUF_SIZE = 1024;
 
-enum ErrRle 
-{ 
+enum ErrRle
+{
 	ERR_NO_ERROR,
-	ERR_MAX_SIZE, 
-	ERR_ZERO_LENGTH_FILE, 
+	ERR_MAX_SIZE,
+	ERR_ZERO_LENGTH_FILE,
 };
 
-void PrintUsage() 
+void PrintUsage()
 {
 	cout << "USAGE: rle.exe pack <input file> <output file>" << endl;
 	cout << "       rle.exe unpack <input file> <output file>" << endl;
@@ -23,6 +23,7 @@ void PrintUsage()
 ErrRle PackFile(ifstream& fileIn, ofstream& fileOut)
 {
 	unsigned char bufferOut[2];
+	unsigned long bufferSize = sizeof(bufferOut);
 	unsigned long totalSize = 0;
 	if (!fileIn.eof())
 	{
@@ -40,18 +41,16 @@ ErrRle PackFile(ifstream& fileIn, ofstream& fileOut)
 			}
 			bufferOut[0] = charCount;
 			bufferOut[1] = oldChar;
-			unsigned int incSize = sizeof(bufferOut);
-			totalSize += incSize;
+			totalSize += bufferSize;
 			if (totalSize > MAX_SIZE)
 			{
-				delete[] bufferOut;
 				return ERR_MAX_SIZE;
-			} else
+			}
+			else
 			{
-				fileOut.write((const char*)(bufferOut), sizeof(bufferOut));
+				fileOut.write(reinterpret_cast<const char*>(bufferOut), bufferSize);
 			}
 		}
-		delete[] bufferOut;
 	}
 	if (totalSize == 0)
 	{
@@ -60,14 +59,14 @@ ErrRle PackFile(ifstream& fileIn, ofstream& fileOut)
 	return ERR_NO_ERROR;
 }
 
-ErrRle UnpackChars(char* & bufferIn, int bufferInSize, ofstream& fileOut, unsigned long& totalBufferOutSize)
+ErrRle UnpackChars(unsigned char* & bufferIn, long bufferInSize, ofstream& fileOut, unsigned long& totalBufferOutSize)
 {
-	char bufferOut[BUF_SIZE];
+	unsigned char* bufferOut = new unsigned char[BUF_SIZE];
 	for (int i = 0; i < bufferInSize; i += 2)
 	{
 		unsigned long bufferOutSize = 0;
 		unsigned char countChars = bufferIn[i];
-		char newChar = bufferIn[i + 1];
+		unsigned char newChar = bufferIn[i + 1];
 		for (unsigned char j = 0; j < countChars; ++j)
 		{
 			bufferOut[bufferOutSize++] = newChar;
@@ -75,10 +74,12 @@ ErrRle UnpackChars(char* & bufferIn, int bufferInSize, ofstream& fileOut, unsign
 		totalBufferOutSize += bufferOutSize;
 		if (totalBufferOutSize > MAX_SIZE)
 		{
+			delete[] bufferOut;
 			return ERR_MAX_SIZE;
 		}
-		fileOut.write(bufferOut, bufferOutSize);
+		fileOut.write(reinterpret_cast<char*>(bufferOut), bufferOutSize);
 	}
+	delete[] bufferOut;
 	return ERR_NO_ERROR;
 }
 
@@ -87,12 +88,16 @@ ErrRle UnpackFile(ifstream& fileIn, ofstream& fileOut)
 	unsigned long totalSize = 0;
 	while (!fileIn.eof())
 	{
-		char* bufferIn = new char[BUF_SIZE];
+		unsigned char* bufferIn = new unsigned char[BUF_SIZE];
 		ErrRle err = ERR_NO_ERROR;
-		while (fileIn.read(bufferIn, BUF_SIZE))
+		while (fileIn.read(reinterpret_cast<char*>(bufferIn), BUF_SIZE))
 		{
 			err = UnpackChars(bufferIn, BUF_SIZE, fileOut, totalSize);
-			if (err != 0) return err;
+			if (err != 0)
+			{
+				delete[] bufferIn;
+				return err;
+			}
 		}
 		err = UnpackChars(bufferIn, fileIn.gcount(), fileOut, totalSize);
 		delete[] bufferIn;

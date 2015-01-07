@@ -13,6 +13,30 @@ unsigned long StringToULong(const char * str, bool & err)
 	return param;
 }
 
+void printFib(const unsigned long n)
+{
+	unsigned long prevValue = 0;
+	unsigned long nextValue = 1;
+	bool firstNumber = true;
+	for (int i = 1; (nextValue < n) && (prevValue <= nextValue); ++i)
+	{
+		if (!firstNumber)
+		{
+			cout << ", ";
+			if ((i % 5) == 1)
+			{
+				cout << endl;
+				firstNumber = true;
+			}
+		}
+		cout << nextValue;
+		firstNumber = false;
+		unsigned long tempValue = prevValue + nextValue;
+		prevValue = nextValue;
+		nextValue = tempValue;
+	}
+}
+
 int main(int argc, char * argv[]) 
 {
 	if (argc < 2)
@@ -35,26 +59,7 @@ int main(int argc, char * argv[])
 		return 1;
 	}
 
-	unsigned long prevValue = 0;
-	unsigned long nextValue = 1;
-	bool firstNumber = true;
-	for (int i = 1; (nextValue < n) && (prevValue <= nextValue); ++i)
-	{
-		if (!firstNumber)
-		{
-			cout << ", ";
-			if ((i % 5) == 1)
-			{
-				cout << endl;
-				firstNumber = true;
-			}
-		}
-		cout << nextValue;
-		firstNumber = false;
-		unsigned long tempValue = prevValue + nextValue;
-		prevValue = nextValue;
-		nextValue = tempValue;
-	}
-
+	printFib(n);
+	
 	return 0;
 }

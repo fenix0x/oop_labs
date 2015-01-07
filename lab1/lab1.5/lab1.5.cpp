@@ -29,16 +29,15 @@ double CalculateDistance(double velocity, double angle)
 
 double EnterValue(const string message, bool & finish) 
 {
-	string value;
-	const string ex = "exit";
 	finish = false;
 	double result = 0;
 	bool err = false;
 	do
 	{
+		string value;
 		cout << message;
 		cin >> value;
-		if (value == ex)
+		if (value == "exit")
 		{ 
 			finish = true;
 			return 0;
@@ -63,15 +62,14 @@ int main(int argc, char * argv[])
 	printf("%g\n", CalculateDistance(10,-30));
 */
 	bool finish = false;
-	bool err = false;
 
 	do
 	{
 		double velocity = EnterValue("Enter initial velocity (or type 'exit') > ", finish);
-		double angle;
-		if (!finish)
+		double angle = -1;
+		while ((!finish) && ((angle<0.0) || (angle>90.0)))
 		{
-			angle = EnterValue("Enter initial angle (or type 'exit') > ", finish);
+			angle = EnterValue("Enter initial angle (0-90) (or type 'exit') > ", finish);
 		}
 		if (!finish)
 		{
