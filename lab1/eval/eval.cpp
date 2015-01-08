@@ -43,8 +43,9 @@ double StringToDouble(const char * str, bool & err)
 	return param;
 }
 
-double evaluate(const double param1, const double param2, const OperatorEval exprOperator, ErrEval & err)
+double ApplyOperation(const double param1, const double param2, const OperatorEval exprOperator, ErrEval & err)
 {
+
 	switch (exprOperator)
 	{
 	case OPERATOR_SUM:
@@ -60,12 +61,14 @@ double evaluate(const double param1, const double param2, const OperatorEval exp
 			return 0;
 		}
 		return param1 / param2;
+	default:
+		return param1;
 	}
 }
 
-ErrEval processCommandStringEval(const int argc, char* argv[])
+ErrEval EvaluateExpression(const int argc, const char* const argv[])
 {
-	double sum = 0.0;
+	double result = 0.0;
 	OperatorEval exprOperator = OPERATOR_SUM;
 	for (int i = 1; i < argc; ++i)
 	{
@@ -81,8 +84,7 @@ ErrEval processCommandStringEval(const int argc, char* argv[])
 		}
 		else
 		{
-			double param = 0.0;
-			param = StringToDouble(argv[i], err);
+			double param = StringToDouble(argv[i], err);
 			if (err)
 			{
 				cout << "Argument #" << i << " is not a number." << endl;
@@ -91,7 +93,7 @@ ErrEval processCommandStringEval(const int argc, char* argv[])
 
 			ErrEval errEv = ERR_NO_ERROR;
 
-			sum = evaluate(sum, param, exprOperator, errEv);
+			result = ApplyOperation(result, param, exprOperator, errEv);
 
 			if (errEv == ERR_DIV_BY_ZERO)
 			{
@@ -103,7 +105,7 @@ ErrEval processCommandStringEval(const int argc, char* argv[])
 			cout << " " << param;
 		}
 	}
-	printf(" = %6.3f\n", sum);
+	printf(" = %6.3f\n", result);
 
 	return ERR_NO_ERROR;
 }
@@ -121,6 +123,6 @@ int main(int argc, char* argv[])
 		return ERR_EVEN_ARGUMENTS;
 	}
 
-	return processCommandStringEval(argc, argv);
+	return EvaluateExpression(argc, argv);
 }
 

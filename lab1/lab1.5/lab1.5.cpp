@@ -27,7 +27,7 @@ double CalculateDistance(double velocity, double angle)
 		return pow(velocity, 2) * sin(2 * DegreeToRadian(angle)) / 9.8;
 }
 
-double EnterValue(const string message, bool & finish) 
+double EnterValue(const string &message, bool & finish) 
 {
 	finish = false;
 	double result = 0;
@@ -53,14 +53,6 @@ double EnterValue(const string message, bool & finish)
 
 int main(int argc, char * argv[]) 
 {
-	/*
-	printf("%g\n", CalculateDistance(3,30));
-	printf("%g\n", CalculateDistance(3,45));
-	printf("%g\n", CalculateDistance(3,90));
-	printf("%g\n", CalculateDistance(3,60));
-	printf("%g\n", CalculateDistance(-10,30));
-	printf("%g\n", CalculateDistance(10,-30));
-*/
 	bool finish = false;
 
 	do

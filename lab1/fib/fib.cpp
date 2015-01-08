@@ -13,7 +13,7 @@ unsigned long StringToULong(const char * str, bool & err)
 	return param;
 }
 
-void printFib(const unsigned long n)
+void PrintFib(const unsigned long n)
 {
 	unsigned long prevValue = 0;
 	unsigned long nextValue = 1;
@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
 		return 1;
 	}
 
-	printFib(n);
+	PrintFib(n);
 	
 	return 0;
 }

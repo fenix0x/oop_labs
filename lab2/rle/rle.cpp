@@ -5,13 +5,20 @@
 using namespace std;
 
 const unsigned long MAX_SIZE = 2UL * 1073741824UL - 1UL; // 2Gb
-const long BUF_SIZE = 1024;
+
+struct RLEChunk
+{
+	unsigned char counter;
+	char value;
+};
 
 enum ErrRle
 {
 	ERR_NO_ERROR,
 	ERR_MAX_SIZE,
-	ERR_ZERO_LENGTH_FILE,
+	ERR_FILE_CORRUPTED,
+	ERR_FILE_OPEN_READ,
+	ERR_FILE_OPEN_WRITE,
 };
 
 void PrintUsage()
@@ -20,91 +27,150 @@ void PrintUsage()
 	cout << "       rle.exe unpack <input file> <output file>" << endl;
 }
 
-ErrRle PackFile(ifstream& fileIn, ofstream& fileOut)
+void WriteChunk(ofstream & file, const RLEChunk & chunk)
 {
-	unsigned char bufferOut[2];
-	unsigned long bufferSize = sizeof(bufferOut);
+	file.write(reinterpret_cast<const char*>(&chunk), sizeof(chunk));
+}
+
+bool ReadChunk(ifstream & file, RLEChunk & chunk)
+{
+	file.read(reinterpret_cast<char*>(&chunk), sizeof(chunk));
+	return !!file;
+}
+
+ErrRle PackFile(const char* inputFilename, const char* outputFilename)
+{
+
+	// open a file to read
+	ifstream fileIn(inputFilename, ios_base::binary);
+	if (!fileIn)
+	{
+		return ERR_FILE_OPEN_READ;
+	}
+
+	// open a file to write
+	ofstream fileOut(outputFilename, ios_base::binary);
+	if (!fileOut)
+	{
+		return ERR_FILE_OPEN_WRITE;
+	}
+
 	unsigned long totalSize = 0;
 	if (!fileIn.eof())
 	{
-		unsigned char newChar = fileIn.get();
-		while (!fileIn.eof())
+		char newChar = fileIn.get();
+		while (fileIn)
 		{
 			unsigned char charCount = 1;
-			unsigned char oldChar = newChar;
-			if (!fileIn.eof())
+			char oldChar = newChar;
+			while (fileIn && (oldChar == (newChar = fileIn.get())) && (charCount < 255))
 			{
-				while (!fileIn.eof() && (oldChar == (newChar = fileIn.get())) && (charCount < 255))
-				{
-					++charCount;
-				}
+				++charCount;
 			}
-			bufferOut[0] = charCount;
-			bufferOut[1] = oldChar;
-			totalSize += bufferSize;
+			RLEChunk chunk;
+			chunk.counter = charCount;
+			chunk.value = oldChar;
+			totalSize += sizeof(chunk);
 			if (totalSize > MAX_SIZE)
 			{
 				return ERR_MAX_SIZE;
 			}
 			else
 			{
-				fileOut.write(reinterpret_cast<const char*>(bufferOut), bufferSize);
+				WriteChunk(fileOut, chunk);
 			}
 		}
 	}
-	if (totalSize == 0)
-	{
-		return ERR_ZERO_LENGTH_FILE;
-	}
+	fileOut.close();
 	return ERR_NO_ERROR;
 }
 
-ErrRle UnpackChars(unsigned char* & bufferIn, long bufferInSize, ofstream& fileOut, unsigned long& totalBufferOutSize)
+void ExplodeChunk(ostream & outStream, RLEChunk const& chunk)
 {
-	unsigned char* bufferOut = new unsigned char[BUF_SIZE];
-	for (int i = 0; i < bufferInSize; i += 2)
+	char countChars = chunk.counter;
+	while (countChars--)
 	{
-		unsigned long bufferOutSize = 0;
-		unsigned char countChars = bufferIn[i];
-		unsigned char newChar = bufferIn[i + 1];
-		for (unsigned char j = 0; j < countChars; ++j)
+		outStream.put(chunk.value);
+	}
+}
+
+ErrRle UnpackFile(const char* inputFilename, const char* outputFilename)
+{
+	// open file to read
+	ifstream fileIn(inputFilename, ios_base::binary);
+	if (!fileIn)
+	{
+		return ERR_FILE_OPEN_READ;
+	}
+
+	// open file to write
+	ofstream fileOut(outputFilename, ios_base::binary);
+	if (!fileOut)
+	{
+		return ERR_FILE_OPEN_WRITE;
+	}
+
+	unsigned long totalSize = 0;
+	RLEChunk chunk;
+	while (ReadChunk(fileIn, chunk))
+	{
+		if (chunk.counter == 0)
 		{
-			bufferOut[bufferOutSize++] = newChar;
+			return ERR_FILE_CORRUPTED;
 		}
-		totalBufferOutSize += bufferOutSize;
-		if (totalBufferOutSize > MAX_SIZE)
+
+		totalSize += chunk.counter;
+		if (totalSize > MAX_SIZE)
 		{
-			delete[] bufferOut;
 			return ERR_MAX_SIZE;
 		}
-		fileOut.write(reinterpret_cast<char*>(bufferOut), bufferOutSize);
+
+		ExplodeChunk(fileOut, chunk);
+
 	}
-	delete[] bufferOut;
 	return ERR_NO_ERROR;
 }
 
-ErrRle UnpackFile(ifstream& fileIn, ofstream& fileOut)
+void PrintError(ErrRle err, char* command, char* inputFileName, char* outputFileName)
 {
-	unsigned long totalSize = 0;
-	while (!fileIn.eof())
+	switch (err)
 	{
-		unsigned char* bufferIn = new unsigned char[BUF_SIZE];
-		ErrRle err = ERR_NO_ERROR;
-		while (fileIn.read(reinterpret_cast<char*>(bufferIn), BUF_SIZE))
-		{
-			err = UnpackChars(bufferIn, BUF_SIZE, fileOut, totalSize);
-			if (err != 0)
-			{
-				delete[] bufferIn;
-				return err;
-			}
-		}
-		err = UnpackChars(bufferIn, fileIn.gcount(), fileOut, totalSize);
-		delete[] bufferIn;
-		if (err != 0)
-			return err;
+	case ERR_FILE_CORRUPTED:
+		cout << "Input file " << inputFileName << " is corruped. Aborting job." << endl;
+		return;
+	case ERR_MAX_SIZE:
+		cout << "Output file " << outputFileName << " max size reached. Aborting job." << endl;
+		return;
+	case ERR_NO_ERROR:
+		cout << "File " << inputFileName << " " << command << "ed into " << outputFileName << " succesfuly." << endl;
+		return;
+	case ERR_FILE_OPEN_READ:
+		cout << "Can't open file " << inputFileName << " to read." << endl;
+		return;
+	case ERR_FILE_OPEN_WRITE:
+		cout << "Can't open file " << outputFileName << " to write." << endl;
+		return;
+	default:
+		return;
 	}
-	return ERR_NO_ERROR;
+}
+
+ErrRle ExecuteCommand(const char* command, const char* inputFile, const char* outputFile)
+{
+	ErrRle err = ERR_NO_ERROR;
+	if (!strcmp(command, "pack"))
+	{
+		err = PackFile(inputFile, outputFile);
+	}
+	else if (!strcmp(command, "unpack"))
+	{
+		err = UnpackFile(inputFile, outputFile);
+	}
+	else
+	{
+		PrintUsage();
+	}
+	return err;
 }
 
 int main(int argc, char* argv[])
@@ -115,59 +181,10 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	char* command = argv[1];
-	if ((command != "pack") && (command == "unpack"))
-	{
-		PrintUsage();
-		return 0;
-	}
+	ErrRle err = ExecuteCommand(argv[1], argv[2], argv[3]);
 
-	char* inputFilename = argv[2];
-	char* outputFilename = argv[3];
+	PrintError(err, argv[1], argv[2], argv[3]);
 
-	// open a file to read
-	ifstream fIn(inputFilename, ifstream::binary);
-	if (!fIn.good())
-	{
-		cout << "File " << inputFilename << " opening error." << endl;
-		return 1;
-	}
-
-	// open a file to write
-	ofstream fOut(outputFilename, ofstream::binary);
-	if (!fOut.good())
-	{
-		cout << "File " << outputFilename << " opening error." << endl;
-		return 1;
-	}
-
-	int err = 0;
-	if (strcmp(command, "pack") == 0)
-	{
-		err = PackFile(fIn, fOut);
-	}
-	else
-	{
-		err = UnpackFile(fIn, fOut);
-	}
-
-	fOut.close();
-
-	switch (err)
-	{
-	case ERR_MAX_SIZE:
-		cout << "Output file " << outputFilename << " max size reached. Aborting job." << endl;
-		return 1;
-	case ERR_ZERO_LENGTH_FILE:
-		cout << "Warning! Intput file " << inputFilename << " is empty." << endl;
-		break;
-	case ERR_NO_ERROR:
-		cout << "File " << inputFilename << " " << command << "ed into " << outputFilename << " succesfuly." << endl;
-		break;
-	default:
-		break;
-	}
-
-	return 0;
+	return err;
 }
 
