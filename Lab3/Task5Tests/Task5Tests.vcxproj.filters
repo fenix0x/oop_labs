@@ -24,7 +24,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VectorProcessor.h">
+    <ClInclude Include="..\Task5\ParseURL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,10 +32,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Task1.cpp">
+    <ClCompile Include="Task5Tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VectorProcessor.cpp">
+    <ClCompile Include="..\Task5\ParseURL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

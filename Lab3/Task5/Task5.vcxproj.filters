@@ -24,7 +24,10 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VectorProcessor.h">
+    <ClInclude Include="..\Task5\RemoveExtraSpaces.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParseURL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,10 +35,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Task1.cpp">
+    <ClCompile Include="Task5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VectorProcessor.cpp">
+    <ClCompile Include="ParseURL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
