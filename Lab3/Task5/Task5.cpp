@@ -21,7 +21,7 @@ void main()
 		}
 		else
 		{
-			cout << "invalid URL" << endl;
+			cout << inputText << endl << "invalid URL" << endl;
 		}
 	}
 }
