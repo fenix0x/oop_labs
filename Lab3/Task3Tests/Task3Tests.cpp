@@ -8,19 +8,10 @@
 
 using namespace std;
 
-template <typename Map>
-bool map_compare(Map const &lhs, Map const &rhs) {
-	// No predicate needed because there is operator== for pairs already.
-	return lhs.size() == rhs.size()
-		&& std::equal(lhs.begin(), lhs.end(),
-		rhs.begin());
-}
-
 bool VerifyWordsCount(string const& inputText, WordsCountMapping const& expectedMap)
 {
-	return map_compare(CountWords(inputText), expectedMap);
+	return (expectedMap == CountWords(inputText)); 
 }
-
 
 // Набор тестов имеющих что-то общее
 BOOST_AUTO_TEST_SUITE(WordsCountingTests)

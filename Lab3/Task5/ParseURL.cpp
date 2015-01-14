@@ -70,8 +70,5 @@ bool ParseURL(std::string const& url, Protocol &  protocol, int & port, std::str
 		return false;
 	}
 	host = url.substr(pos, posPort - pos);
-
 	return true;
-
-
 }

@@ -4,13 +4,12 @@
 #include "stdafx.h"
 #include <string>
 #include "../Task2/RemoveExtraSpaces.h"
+#include <boost/test/unit_test.hpp>
 
-using namespace std;
-
-bool VerifyStringProcessing(string inputString, string const& expectedString)
+bool VerifyStringProcessing(std::string inputString, std::string const& expectedString)
 {
 	RemoveExtraSpaces(inputString);
-	return (expectedString.compare(RemoveExtraSpaces(inputString)) == 0);
+	return (expectedString == RemoveExtraSpaces(inputString));
 }
 
 // Набор тестов имеющих что-то общее

@@ -4,8 +4,6 @@
 #include <string>
 #include <map>
 
-using namespace std;
+typedef std::map<std::string, int> WordsCountMapping;
 
-typedef std::map<string, int> WordsCountMapping;
-
-WordsCountMapping CountWords(string const & inputText);
+WordsCountMapping CountWords(std::string const & inputText);

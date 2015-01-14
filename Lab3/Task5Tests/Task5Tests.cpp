@@ -4,7 +4,6 @@
 #include <string>
 
 using namespace std;
-//using namespace boost;
 
 bool VerifyParseURL(string const& inputText, Protocol expectedProtocol, int expectedPort, std::string const & expectedHost,
 	std::string const & expectedDocument)

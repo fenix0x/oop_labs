@@ -13,8 +13,9 @@ WordsCountMapping CountWords(string const & inputText)
 	WordsCountMapping result;
 	char_separator<char> sep(" ,;\t\n");
 	tokenizer<char_separator<char>> tokens(inputText, sep);
-	for (const auto& token : tokens) {
-		result[to_lower_copy(token)]++;
+	for (const auto& token : tokens) 
+	{
+		++result[to_lower_copy(token)];
 	}
 	return result;
 }

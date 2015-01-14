@@ -24,9 +24,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Task5\RemoveExtraSpaces.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ParseURL.h">
       <Filter>Header Files</Filter>
     </ClInclude>

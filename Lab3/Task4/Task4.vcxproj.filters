@@ -24,9 +24,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Task2\RemoveExtraSpaces.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PrimeNumbs.h">
       <Filter>Header Files</Filter>
     </ClInclude>

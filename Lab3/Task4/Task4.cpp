@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include "PrimeNumbs.h"
+#include <set>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ void main(int argc, char* argv[])
 
 	set<int> primes = GeneratePrimeNumbersSet(maxBound);
 
-	ostream_iterator<double> output(cout, " ");
+	ostream_iterator<int> output(cout, " ");
 	cout << endl << "Primes: ";
 	copy(primes.begin(), primes.end(), output);
 }

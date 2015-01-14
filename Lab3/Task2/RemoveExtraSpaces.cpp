@@ -7,7 +7,8 @@ std::string RemoveExtraSpaces(std::string const& arg)
 {
 	bool isSymbolsStarted = false;
 	bool haveSpaces = false;
-	string result = "";
+	string result;
+	result.reserve(arg.size());
 	for (unsigned i = 0; i < arg.size(); ++i)
 	{
 		const char ch = arg[i];
