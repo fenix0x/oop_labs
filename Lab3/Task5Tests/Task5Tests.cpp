@@ -52,7 +52,10 @@ BOOST_AUTO_TEST_CASE(ParseURL)
 	BOOST_CHECK(VerifyParseURL("http://www.host.com/index.html", HTTP, 80, "www.host.com", "index.html"));
 	BOOST_CHECK(VerifyParseURL("http://www.host.com:55/index.html", HTTP, 55, "www.host.com", "index.html"));
 	BOOST_CHECK(VerifyParseURL("http://www.host.com/", HTTP, 80, "www.host.com", ""));
-	BOOST_CHECK(VerifyParseURL("http://:78", HTTP, 78, "", ""));
+	BOOST_CHECK(!VerifyParseURL("http://:78", HTTP, 78, "", ""));
+	BOOST_CHECK(!VerifyParseURL("http://www.host.com:0/index.html", HTTP, 0, "www.host.com", "index.html"));
+	BOOST_CHECK(!VerifyParseURL("http://www.host.com:65536/index.html", HTTP, 65536, "www.host.com", "index.html"));
+	BOOST_CHECK(!VerifyParseURL("http://:33/index.html", HTTP, 33, "", "index.html"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

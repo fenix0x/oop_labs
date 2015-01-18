@@ -8,14 +8,14 @@ using namespace std;
 bool ParseURL(std::string const& url, Protocol &  protocol, int & port, std::string & host,
 	std::string & document)
 {
-	
+
 	size_t pos = url.find("://");
 	if (pos == string::npos)
 	{
 		return false;
 	}
 	string protocolStr = to_lower_copy(url.substr(0, pos));
-	if (protocolStr == "http") 
+	if (protocolStr == "http")
 	{
 		protocol = HTTP;
 		port = 80;
@@ -52,23 +52,27 @@ bool ParseURL(std::string const& url, Protocol &  protocol, int & port, std::str
 			return false;
 		}
 		host = url.substr(pos, posPort - pos);
-		return true;
+		return (host.length() > 0);
 	}
 	if (posPort == string::npos)
 	{
 		document = url.substr(posDoc + 1, url.length());
 		host = url.substr(pos, posDoc - pos);
-		return true;
+		return (host.length() > 0);
 	}
 	document = url.substr(posDoc + 1, url.length());
 	try
 	{
 		port = stoi(url.substr(posPort + 1, posDoc - posPort - 1));
+		if ((port < 1) || (port > 65535))
+		{
+			return false;
+		}
 	}
 	catch (...)
 	{
 		return false;
 	}
 	host = url.substr(pos, posPort - pos);
-	return true;
+	return (host.length() > 0);
 }
