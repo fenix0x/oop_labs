@@ -5,74 +5,92 @@ using namespace boost;
 
 using namespace std;
 
-bool ParseURL(std::string const& url, Protocol &  protocol, int & port, std::string & host,
-	std::string & document)
+bool parseProtocol(string const& protocolStr, Protocol &  protocol, int & port)
 {
-
-	size_t pos = url.find("://");
-	if (pos == string::npos)
-	{
-		return false;
-	}
-	string protocolStr = to_lower_copy(url.substr(0, pos));
 	if (protocolStr == "http")
 	{
 		protocol = HTTP;
 		port = 80;
+		return true;
 	}
 	else if (protocolStr == "https")
 	{
 		protocol = HTTPS;
 		port = 443;
+		return true;
 	}
 	else if (protocolStr == "ftp")
 	{
 		protocol = FTP;
 		port = 21;
+		return true;
 	}
 	else
 		return false;
+}
 
-	pos += 3;
-	size_t posPort = url.find(":", pos);
-	size_t posDoc = url.find("/", pos);
-	if ((posPort == string::npos) && (posDoc == string::npos))
-	{
-		host = url.substr(pos, url.length());
-		return true;
-	}
-	if (posDoc == string::npos)
-	{
-		try
-		{
-			port = stoi(url.substr(posPort + 1, url.length()));
-		}
-		catch (...)
-		{
-			return false;
-		}
-		host = url.substr(pos, posPort - pos);
-		return (host.length() > 0);
-	}
-	if (posPort == string::npos)
-	{
-		document = url.substr(posDoc + 1, url.length());
-		host = url.substr(pos, posDoc - pos);
-		return (host.length() > 0);
-	}
-	document = url.substr(posDoc + 1, url.length());
+bool parseHost(string const& urlStr, int start, int size, string & host)
+{
+	host = urlStr.substr(start, size);
+	return (host.length() > 0);
+}
+
+bool parsePort(string const& urlStr, int start, int size, int & port)
+{
 	try
 	{
-		port = stoi(url.substr(posPort + 1, posDoc - posPort - 1));
-		if ((port < 1) || (port > 65535))
-		{
-			return false;
-		}
+		port = stoi(urlStr.substr(start, size));
+		return ((port >= 1) && (port <= 65535));
 	}
 	catch (...)
 	{
 		return false;
 	}
-	host = url.substr(pos, posPort - pos);
-	return (host.length() > 0);
+}
+
+bool ParseURL(std::string const& url, Protocol &  protocol, int & port, std::string & host,
+	std::string & document)
+{
+	size_t pos = url.find("://");
+	if (pos == string::npos)
+	{
+		return false;
+	}
+
+	if (!parseProtocol(to_lower_copy(url.substr(0, pos)), protocol, port))
+	{
+		return false;
+	}
+
+	pos += 3;
+	size_t posPort = url.find(":", pos);
+	size_t posDoc = url.find("/", pos);
+	document = "";
+
+	if ((posPort == string::npos) && (posDoc == string::npos))
+	{
+		return parseHost(url, pos, url.length(), host);
+	}
+	
+	if (posDoc == string::npos)
+	{
+		if (!parsePort(url, posPort + 1, url.length(), port))
+		{
+			return false;
+		}
+		return parseHost(url, pos, posPort - pos, host);
+	}
+	
+	if (posPort == string::npos)
+	{
+		document = url.substr(posDoc + 1, url.length());
+		return parseHost(url, pos, posDoc - pos, host);
+	}
+	
+	document = url.substr(posDoc + 1, url.length());
+	if (!parsePort(url, posPort + 1, posDoc - posPort - 1, port))
+	{
+		return false;
+	}
+	return parseHost(url, pos, posPort - pos, host);
 }
