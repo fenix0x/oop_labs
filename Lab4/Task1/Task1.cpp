@@ -10,7 +10,7 @@
 using namespace std;
 using namespace boost;
 
-string GetCarDirectionString(CCar & car)
+string GetCarDirectionString(CCar const & car)
 {
 	switch (car.GetDirection()) {
 	case (FORWARD) :
@@ -20,21 +20,15 @@ string GetCarDirectionString(CCar & car)
 	case(REVERSE) :
 		return "Reverse";
 	}
+	return "Undefinied";
 }
 
-string GetCarEngineStatusString(CCar & car)
+string GetCarEngineStatusString(CCar const & car)
 {
-	if (car.IsEngineOn())
-	{
-		return "On";
-	}
-	else
-	{
-		return "Off";
-	}
+	return car.IsEngineOn() ? "On" : "Off";
 }
 
-void GetCarInfo(CCar & car)
+void GetCarInfo(const CCar & car)
 // Выводит состояние двигателя автомобиля, направление движения, скорость и передачу
 {
 	cout << "Engine:    " << GetCarEngineStatusString(car) << endl;

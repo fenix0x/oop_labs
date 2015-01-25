@@ -21,20 +21,35 @@ public:
 
 	bool SetSpeed(int speed);
 
-	bool IsEngineOn();
+	bool IsEngineOn() const;
 
-	int GetGear();
+	int GetGear() const;
 
-	int GetSpeed();
+	int GetSpeed() const;
 
-	MoveDirection GetDirection();
+	MoveDirection GetDirection() const;
 
 private:
 	bool m_isEngineOn;
 	int m_gear;
 	int m_speed;
 
-	bool IsSpeedInGearLimits(int gear, int speed);
+	static const int GEAR_SPEED[5][2];
+
+	bool static IsSpeedInGearLimits(int gear, int speed)
+	{
+		if (gear == 0)
+		{
+			return true;
+		}
+		if (gear == -1)
+		{
+			return ((speed >= -20) && (speed <= 0));
+		}
+		return ((speed >= GEAR_SPEED[gear - 1][0]) && (speed <= GEAR_SPEED[gear - 1][1]));
+	}
+
+
 
 };
 

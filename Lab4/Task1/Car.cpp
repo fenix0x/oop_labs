@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include <stdlib.h> 
+//#include <boost/math/special_functions/sign.hpp>
 #include "Car.h"
+
+template <typename T> int sgn(T val) {
+	return (T(0) < val) - (val < T(0));
+}
 
 CCar::CCar()
 :m_isEngineOn(false)
@@ -13,7 +18,7 @@ CCar::~CCar()
 {
 }
 
-int GEAR_SPEED[5][2] = { { 0, 30 }, { 20, 50 }, { 30, 60 }, { 40, 90 }, { 50, 150 } };
+const int CCar::GEAR_SPEED[5][2] = { { 0, 30 }, { 20, 50 }, { 30, 60 }, { 40, 90 }, { 50, 150 } };
 
 bool CCar::TurnOnEngine()
 {
@@ -41,19 +46,6 @@ bool CCar::TurnOffEngine()
 	{
 		return false;
 	}
-}
-
-bool CCar::IsSpeedInGearLimits(int gear, int speed)
-{
-	if (gear == 0)
-	{
-		return true;
-	}
-	if (gear == -1)
-	{
-		return ((speed >= -20) && (speed <= 0));
-	}
-	return ((speed >= GEAR_SPEED[gear - 1][0]) && (speed <= GEAR_SPEED[gear - 1][1]));
 }
 
 bool CCar::SetGear(int gear)
@@ -86,18 +78,18 @@ bool CCar::SetSpeed(int speed)
 	{
 		return false;
 	}
-	int real_speed = speed;
+	int realSpeed = speed;
 	if (m_gear < 0)
 	{
-		real_speed = -speed;
+		realSpeed = -speed;
 	}
 	if ((m_gear == 0) && (speed > abs(m_speed)))
 	{
 		return false;
 	}
-	if (IsSpeedInGearLimits(m_gear, real_speed))
+	if ((IsSpeedInGearLimits(m_gear, realSpeed)) && ((sgn(realSpeed) == sgn(m_speed)) || (m_speed == 0) || (realSpeed == 0)))
 	{
-		m_speed = real_speed;
+		m_speed = realSpeed;
 		return true;
 	}
 	else
@@ -106,22 +98,22 @@ bool CCar::SetSpeed(int speed)
 	}
 }
 
-bool CCar::IsEngineOn()
+bool CCar::IsEngineOn() const
 {
 	return m_isEngineOn;
 }
 
-int CCar::GetGear()
+int CCar::GetGear() const
 {
 	return m_gear;
 }
 
-int CCar::GetSpeed()
+int CCar::GetSpeed() const
 {
 	return abs(m_speed);
 }
 
-MoveDirection CCar::GetDirection()
+MoveDirection CCar::GetDirection() const
 {
 	if ((!m_isEngineOn) || (m_speed == 0))
 	{
