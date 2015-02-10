@@ -5,7 +5,7 @@ using namespace boost;
 
 using namespace std;
 
-bool parseProtocol(string const& protocolStr, Protocol &  protocol, int & port)
+bool ParseProtocol(string const& protocolStr, Protocol &  protocol, int & port)
 {
 	if (protocolStr == "http")
 	{
@@ -29,13 +29,13 @@ bool parseProtocol(string const& protocolStr, Protocol &  protocol, int & port)
 		return false;
 }
 
-bool parseHost(string const& urlStr, int start, int size, string & host)
+bool ParseHost(string const& urlStr, int start, int size, string & host)
 {
 	host = urlStr.substr(start, size);
 	return (host.length() > 0);
 }
 
-bool parsePort(string const& urlStr, int start, int size, int & port)
+bool ParsePort(string const& urlStr, int start, int size, int & port)
 {
 	try
 	{
@@ -57,7 +57,7 @@ bool ParseURL(std::string const& url, Protocol &  protocol, int & port, std::str
 		return false;
 	}
 
-	if (!parseProtocol(to_lower_copy(url.substr(0, pos)), protocol, port))
+	if (!ParseProtocol(to_lower_copy(url.substr(0, pos)), protocol, port))
 	{
 		return false;
 	}
@@ -69,28 +69,28 @@ bool ParseURL(std::string const& url, Protocol &  protocol, int & port, std::str
 
 	if ((posPort == string::npos) && (posDoc == string::npos))
 	{
-		return parseHost(url, pos, url.length(), host);
+		return ParseHost(url, pos, url.length(), host);
 	}
 	
 	if (posDoc == string::npos)
 	{
-		if (!parsePort(url, posPort + 1, url.length(), port))
+		if (!ParsePort(url, posPort + 1, url.length(), port))
 		{
 			return false;
 		}
-		return parseHost(url, pos, posPort - pos, host);
+		return ParseHost(url, pos, posPort - pos, host);
 	}
 	
 	if (posPort == string::npos)
 	{
 		document = url.substr(posDoc + 1, url.length());
-		return parseHost(url, pos, posDoc - pos, host);
+		return ParseHost(url, pos, posDoc - pos, host);
 	}
 	
 	document = url.substr(posDoc + 1, url.length());
-	if (!parsePort(url, posPort + 1, posDoc - posPort - 1, port))
+	if (!ParsePort(url, posPort + 1, posDoc - posPort - 1, port))
 	{
 		return false;
 	}
-	return parseHost(url, pos, posPort - pos, host);
+	return ParseHost(url, pos, posPort - pos, host);
 }
