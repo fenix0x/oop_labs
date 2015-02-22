@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Rectangle.h"
+#include "Canvas.h"
 #include <string>
 #include <fstream>
 #include <exception>
@@ -71,6 +72,36 @@ void ShowRectangleInfo(CRectangle rect, string title)
 	cout << "\tPerimeter:\t" << rect.GetPerimeter() << "\n";
 }
 
+unsigned CanvasCoord(int value)
+{
+	return (value < 0) ? 0 : (unsigned)value;
+}
+
+void PutRectangle2Canvas(CRectangle const& rect, char code, CCanvas & canvas)
+{
+	for (unsigned y = CanvasCoord(rect.GetTop()); y < CanvasCoord(rect.GetBottom()); ++y)
+	{
+		for (unsigned x = CanvasCoord(rect.GetLeft()); x < CanvasCoord(rect.GetRight()); ++x)
+		{
+			canvas.SetPixel(x, y, code);
+		}
+	}
+}
+
+void ShowRectangleCanvas(string const& filename, CCanvas const& canvas)
+{
+	if (filename.empty())
+	{
+		canvas.Write(cout);
+	}
+	else
+	{
+		ofstream output(filename);
+		canvas.Write(output);
+		output.close();
+	}
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc < 3)
@@ -83,11 +114,18 @@ int main(int argc, char * argv[])
 	{
 		CRectangle rect1 = CreateRectangleFromFile(argv[1]);
 		CRectangle rect2 = CreateRectangleFromFile(argv[2]);
+		CCanvas canvas(70, 24);
 
 		ShowRectangleInfo(rect1, "First file rectangle");
+		PutRectangle2Canvas(rect1, '+', canvas);
 		ShowRectangleInfo(rect2, "Second file rectangle");
+		PutRectangle2Canvas(rect2, '-', canvas);
+
 		rect1.Intersect(rect2);
 		ShowRectangleInfo(rect1, "Intersection rectangle");
+		PutRectangle2Canvas(rect1, '#', canvas);
+
+		ShowRectangleCanvas((argc > 3) ? argv[3] : "", canvas);
 	}
 	catch (logic_error const & e)
 	{
@@ -100,5 +138,4 @@ int main(int argc, char * argv[])
 		return 1;
 	}
 	return 0;
-
 }
