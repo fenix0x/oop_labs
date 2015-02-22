@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "ParseURL.h"
 #include <boost/algorithm/string.hpp>
-using namespace boost;
 
+using namespace boost;
 using namespace std;
 
 bool ParseProtocol(string const& protocolStr, Protocol &  protocol, int & port)
