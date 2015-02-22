@@ -114,7 +114,7 @@ int main(int argc, char * argv[])
 	{
 		CRectangle rect1 = CreateRectangleFromFile(argv[1]);
 		CRectangle rect2 = CreateRectangleFromFile(argv[2]);
-		CCanvas canvas(70, 24);
+		CCanvas canvas(60, 20);
 
 		ShowRectangleInfo(rect1, "First file rectangle");
 		PutRectangle2Canvas(rect1, '+', canvas);
