@@ -96,7 +96,7 @@ void PrintShapes(vector<CBodyPointer> & shapes, ostream & ost){
 	}
 }
 
-bool CompareWeight(CBodyPointer shape1, CBodyPointer shape2)
+bool CompareMass(CBodyPointer shape1, CBodyPointer shape2)
 {
 	return shape1->GetMass() < shape2->GetMass();
 }
@@ -125,7 +125,7 @@ int main(int argc, char * argv[])
 	}
 	else
 	{
-		auto maxMassBody = max_element(shapes.begin(), shapes.end(), CompareWeight);
+		auto maxMassBody = max_element(shapes.begin(), shapes.end(), CompareMass);
 		auto minWeightInWater = min_element(shapes.begin(), shapes.end(), CompareWeightInWater);
 		cout << "Body with max mass: " << (*maxMassBody)->ToString() << endl;
 		cout << "Body with min weight in water: " << (*minWeightInWater)->ToString() << endl;
