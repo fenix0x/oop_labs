@@ -80,6 +80,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Task1\Compound.h" />
     <ClInclude Include="..\Task1\Cone.h" />
     <ClInclude Include="..\Task1\Cylinder.h" />
     <ClInclude Include="..\Task1\Parallelepiped.h" />
@@ -89,11 +90,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Task1\Compound.cpp" />
     <ClCompile Include="..\Task1\Cone.cpp" />
     <ClCompile Include="..\Task1\Cylinder.cpp" />
     <ClCompile Include="..\Task1\Parallelepiped.cpp" />
     <ClCompile Include="..\Task1\SolidBody.cpp" />
     <ClCompile Include="..\Task1\Sphere.cpp" />
+    <ClCompile Include="CompoundTest.cpp" />
     <ClCompile Include="ConeTest.cpp" />
     <ClCompile Include="CylinderTest.cpp" />
     <ClCompile Include="ParallelepipedTest.cpp" />

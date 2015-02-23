@@ -2,6 +2,8 @@ Cone. Radius: 30 Height: 20 Density: 4 Weight: 75398.2 Volume: 18849.6
 Sphere. Radius: 20 Density: 2 Weight: 67020.6 Volume: 33510.3
 Cylinder. Radius: 20 Height: 10 Density: 5 Weight: 62831.9 Volume: 12566.4
 Papallelepiped. Width: 10 Height: 20 Depth: 15 Density: 1.5 Weight: 4500 Volume: 3000
+Compound.  Density: 1.45837 Weight: 6823.54 Volume: 4678.88
+Papallelepiped. Width: 10 Height: 10 Depth: 10 Density: 2.5 Weight: 2500 Volume: 1000
 
 Body with max mass: Cone. Radius: 30 Height: 20 Density: 4 Weight: 75398.2 Volume: 18849.6
 Body with min weight in water: Sphere. Radius: 20 Density: 2 Weight: 67020.6 Volume: 33510.3

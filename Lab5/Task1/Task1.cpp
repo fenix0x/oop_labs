@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Body.h"
+#include "Compound.h"
 #include "Cone.h"
 #include "Cylinder.h"
 #include "Parallelepiped.h"
@@ -46,9 +47,18 @@ CBodyPointer CreateCylinder(istream & ist)
 	return make_shared<CCylinder>(radius, height, density);
 }
 
-CBodyPointer CreateComplex(istream & ist)
+CBodyPointer LoadShape(istream & ist);
+
+CBodyPointer CreateCompound(istream & ist)
 {
-	return nullptr;
+	CBodyPointer compound = make_shared<CCompound>();
+	CBodyPointer body = LoadShape(ist);
+	while (body != nullptr)
+	{
+		dynamic_cast<CCompound*>(compound.get())->Add(body);
+		body = LoadShape(ist);
+	}
+	return compound;
 }
 
 CBodyPointer LoadShape(istream & ist)
@@ -73,7 +83,7 @@ CBodyPointer LoadShape(istream & ist)
 	}
 	else if (name == "compound")
 	{
-		return CreateComplex(ist);
+		return CreateCompound(ist);
 	}
 	else
 	{

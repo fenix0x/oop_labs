@@ -2,3 +2,9 @@ cone 30 20 4
 sphere 20 2
 cylinder 20 10 5
 parallelepiped 10 20 15 1.5
+compound
+cone 10 5 1
+sphere 8 2
+cylinder 8 10 1
+/compound
+parallelepiped 10 10 10 2.5
