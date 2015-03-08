@@ -81,7 +81,7 @@ void ProcessCommand(CCar & car, const string & inputCommand)
 	auto token = tokens.begin();
 	if (*token == "setgear")
 	{
-		token++;
+		++token;
 		try
 		{
 			if (car.SetGear(lexical_cast<int>(*token)))
@@ -101,7 +101,7 @@ void ProcessCommand(CCar & car, const string & inputCommand)
 	}
 	if (*token == "setspeed")
 	{
-		token++;
+		++token;
 		try
 		{
 			if (car.SetSpeed(lexical_cast<int>(*token)))

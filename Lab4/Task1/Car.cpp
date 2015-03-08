@@ -50,7 +50,7 @@ bool CCar::TurnOffEngine()
 
 bool CCar::SetGear(int gear)
 {
-	if ((gear<-1) || (gear > 5))
+	if ((gear < -1) || (gear > 5))
 	{
 		return false;
 	}

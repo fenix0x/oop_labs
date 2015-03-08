@@ -14,6 +14,9 @@ public:
 
 	// ¬озвращаем знаменатель
 	int GetDenominator()const;
+
+	// ¬озвращает отношение числител€ и знаменател€ в виде числа double
+	double ToDouble()const;
 	
 	bool operator==(CRational const & rhs)const;
 	bool operator!=(CRational const & rhs)const;

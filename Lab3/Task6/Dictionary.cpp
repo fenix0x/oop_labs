@@ -7,7 +7,6 @@ using namespace std;
 
 CDictionary::CDictionary()
 : m_changed(false)
-, m_dictionaryPath("")
 {
 }
 
@@ -58,10 +57,10 @@ void CDictionary::SaveDictionary()const
 		setlocale(LC_ALL, "Russian");
 		string tempFile = m_dictionaryPath + ".tmp";
 
-		ofstream output(tempFile, ios::app);
+		ofstream output(tempFile);
 		if (output.is_open()) {
-			for (auto iterator = m_dictionary.begin(); iterator != m_dictionary.end(); iterator++) {
-				output << iterator->first << " " << iterator->second << endl;
+			for (auto iterator : m_dictionary) {
+				output << iterator.first << " " << iterator.second << endl;
 			}
 			output.close();
 			if (remove(m_dictionaryPath.c_str()) == 0)
@@ -97,7 +96,6 @@ void CDictionary::ReadDictionary(std::string const& dictionaryPath)
 			{
 				m_dictionary[key] = translation;
 			}
-			input.close();
 		}
 		else
 			throw std::invalid_argument("can't read dictionary: " + dictionaryPath);

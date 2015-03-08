@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "Rational.h"
 
-
 BOOST_AUTO_TEST_SUITE(Rational)
 
 // Рациональное число по умолчанию равно 0/1
@@ -257,6 +256,17 @@ BOOST_AUTO_TEST_CASE(InputStreamDenominatorIs1)
 	ss << "3";
 	ss >> r;
 	BOOST_CHECK(r == CRational(3));
+}
+
+bool DoubleEqual(const double value1, const double value2)
+{
+	return (abs(value1 - value2) < DBL_EPSILON);
+}
+
+BOOST_AUTO_TEST_CASE(CheckToDouble)
+{
+	BOOST_CHECK(DoubleEqual(CRational(2, 1).ToDouble(), 2.0));
+	BOOST_CHECK(DoubleEqual(CRational(2, 3).ToDouble(), 2 / 3));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

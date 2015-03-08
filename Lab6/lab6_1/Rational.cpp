@@ -28,6 +28,12 @@ int CRational::GetDenominator()const
 	return m_denominator;
 }
 
+// Возвращает отношение числителя и знаменателя в виде числа double
+double CRational::ToDouble()const
+{
+	return m_numerator/m_denominator;
+}
+
 bool CRational::operator==(CRational const & rhs)const
 {
 	return (rhs.m_numerator == m_numerator && 
