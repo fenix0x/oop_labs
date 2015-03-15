@@ -103,13 +103,13 @@ void CRational::Assign(int numerator, int denominator)
 //унарный +
 const CRational CRational::operator+ () const
 {
-	return CRational::CRational(m_numerator, m_denominator);
+	return *this; // CRational::CRational(m_numerator, m_denominator);
 }
 
 //унарный -
 const CRational CRational::operator- () const
 {
-	return CRational::CRational(-m_numerator, m_denominator);
+	return CRational(-m_numerator, m_denominator);
 }
 
 CRational& CRational::operator*=(CRational const & rhs)

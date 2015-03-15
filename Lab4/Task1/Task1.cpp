@@ -19,8 +19,9 @@ string GetCarDirectionString(CCar const & car)
 		return "Stop";
 	case(REVERSE) :
 		return "Reverse";
+	default :
+		return "Undefinied";
 	}
-	return "Undefinied";
 }
 
 string GetCarEngineStatusString(CCar const & car)

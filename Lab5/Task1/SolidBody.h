@@ -7,6 +7,7 @@ class CSolidBody :
 
 public:
 	CSolidBody(double density);
+	~CSolidBody();
 
 	double GetMass() const override final;
 	double GetDensity() const override final;

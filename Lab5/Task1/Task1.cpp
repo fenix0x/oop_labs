@@ -51,7 +51,7 @@ CBodyPointer LoadShape(istream & ist);
 
 CBodyPointer CreateCompound(istream & ist)
 {
-	CBodyPointer compound = make_shared<CCompound>();
+	auto compound = make_shared<CCompound>();
 	CBodyPointer body = LoadShape(ist);
 	while (body != nullptr)
 	{
@@ -101,7 +101,8 @@ void LoadShapes(vector<CBodyPointer> & shapes, istream & ist){
 }
 
 void PrintShapes(vector<CBodyPointer> & shapes, ostream & ost){
-	for (auto & shape : shapes) {
+	for (auto & shape : shapes) 
+	{
 		ost << shape->ToString() << endl;
 	}
 }

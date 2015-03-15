@@ -13,6 +13,10 @@ CSolidBody::CSolidBody(double density)
 	}
 }
 
+CSolidBody::~CSolidBody()
+{
+}
+
 double CSolidBody::GetDensity() const
 {
 	return m_density;

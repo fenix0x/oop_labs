@@ -10,6 +10,10 @@ CCompound::CCompound()
 {
 }
 
+CCompound::~CCompound()
+{
+}
+
 double CCompound::GetDensity() const
 {
 	return GetMass() / GetVolume();
@@ -42,7 +46,7 @@ std::string CCompound::ToString() const
 	return strm.str();
 }
 
-bool CCompound::Add(std::shared_ptr<CBody> part)
+bool CCompound::Add(std::shared_ptr<CBody> const part)
 {
 	if (AlreadyHave(part))
 	{
@@ -52,7 +56,7 @@ bool CCompound::Add(std::shared_ptr<CBody> part)
 	return true;
 }
 
-bool CCompound::AlreadyHave(std::shared_ptr<CBody> body)
+const bool CCompound::AlreadyHave(std::shared_ptr<CBody> const body)
 {
 	if (body.get() == this)
 	{
